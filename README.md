@@ -1,4 +1,4 @@
 FriendlyQuizzTwitterBot
 =======================
 
-FriendlyQuizz twitter bot
+A twitter bot for FriendlyQuizz
