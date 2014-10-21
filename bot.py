@@ -19,20 +19,32 @@ class Bot(object):
         #tool.set_interval(self.loop, FETCH_FREQUENCY)
 
     def process(self):
-        # if (self.cm.updateChallenge()):
-        #     ##collect all replies tweet and check answer
-        #     pass
-        print("[LOG] PROCESS")
+        up = self.cm.updateChallenge()
+        pprint.pprint(up)
+        if up:
+            self.cm.processAnswer()
+            self.api.tweetToWinners(self.cm.getCurrentChallenge())
+
+        mentions = self.fetchMentions()
+        if len(mentions):
+            self.processMentions(mentions)
+            
+
+    def fetchMentions(self):
         lm = self.api.getLastMentions()
         mentions = []
         if len(lm):
             for m in lm:
                 pprint.pprint(m)
                 mentions.append(Mention(m))
+        return mentions
 
-            for m in mentions:
-                if m.hasHashtag(HT_CHALLENGE):
-                    if self.cm.hasAliveChallenge():
-                        self.api.replyChallengeAlreadyAlive(m, self.cm.getCurrentChallenge())
-                    else:
-                        self.cm.newChallenge(m)
+    def processMentions(self, mentions):
+        for m in mentions:
+            if self.cm.isAReply(m):
+                self.cm.storeReply(m)
+            elif m.hasHashtag(HT_CHALLENGE):
+                if self.cm.hasAliveChallenge():
+                    self.api.replyChallengeAlreadyAlive(m, self.cm.getCurrentChallenge())
+                else:
+                    self.cm.newChallenge(m)

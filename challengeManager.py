@@ -1,5 +1,7 @@
 from challenge import Challenge
 from datetime import datetime
+import pprint
+import sys
 
 class ChallengeManager(object):
 	"""docstring for ChallengeManager"""
@@ -10,13 +12,14 @@ class ChallengeManager(object):
 		self.challengeDuration = duration
 
 
-	def newChallenge(self, user):
-		question = "Quel systeme d'exploitation est utilsé sur les ordinateurs Apple ?"
+	def newChallenge(self, m):
+		question = "Quel systeme d'exploitation est utilise sur les ordinateurs Apple ?"
 		reponse = "Mac Os"
-		c = Challenge(user, question, reponse)
-		c.isAlive = True
-		api.postNewChallenge(c)
-		self.challenges.append(c)
+		c = Challenge(len(self.challenges) + 1, m, question, reponse)
+		status = self.api.postNewChallenge(c)
+		if status:
+			c.setDetails(status)
+			self.challenges.append(c)
 
 	def hasAliveChallenge(self):
 		if not self.challenges:
@@ -24,18 +27,38 @@ class ChallengeManager(object):
 		return self.challenges[-1].isAlive
 
 	def updateChallenge(self):
+		print("CM update")
 		if not self.challenges:
 			return False
 		c = self.challenges[-1]
-        if (c.isAlive):
-            now = datetime.now()
-            delta = now - c.startDate
-            if(delta.minute >= self.challengeDuration):
-                c.isAlive = False
-            	return True
-        return False
+		if c.isAlive:
+			now = datetime.utcnow()
+			delta = now - c.startDate
+			pprint.pprint(delta)
+			if delta.seconds >= self.challengeDuration:
+				c.isAlive = False
+				return True
+		return False
 
-    def getCurrentChallenge(self):
-    	if not self.challenges:
+	def getCurrentChallenge(self):
+		if not self.challenges:
 			return None
 		return self.challenges[-1]
+
+	def isAReply(self, m):
+		if len(self.challenges):
+			return m.getReplyId() == self.challenges[-1].tweetId
+		return False
+
+	def storeReply(self, m):
+		c = self.challenges[-1]
+		mentionDate = m.status.created_at
+		delta = mentionDate - c.startDate
+		if delta.seconds <= self.challengeDuration:
+			c.addAnswer(m)
+
+	def processAnswer(self):
+		self.challenges[-1].proccessAnwers()
+
+
+
