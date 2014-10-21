@@ -1,12 +1,13 @@
-import urllib
+import json
 import tweepy
 from config import *
 
 class TwitterAPI(object):
 	"""docstring for TwitterAPI"""
-	def __init__(self):
+	def __init__(self, lang):
 		super(TwitterAPI, self).__init__()
 		self.lastId = None
+		self.posts = self.getPosts(lang)
 		self.tweepy = self.getTweepy()
 		self.getTheLastMention()
 
@@ -23,7 +24,7 @@ class TwitterAPI(object):
 		
 	def postNewChallenge(self, challenge):
 		res = None
-		status = ("Nouveau challenge par @{owner}. {question} #FQChallenge").format(owner = challenge.owner.screen_name, question=challenge.question)
+		status = self.posts['postNewChallenge'].format(owner = challenge.owner.screen_name, question=challenge.question)
 		try:
 			res = self.tweepy.update_status(status, in_reply_to_status_id=challenge.replyTweetId)
 		except tweepy.error.TweepError as e:
@@ -32,7 +33,7 @@ class TwitterAPI(object):
 
 	def replyChallengeAlreadyAlive(self, mention, challenge):
 		res = None
-		status = ("@{user} Un challenge est deja en cours ici: https://twitter.com/{name}/status/{tweetId}").format(user=mention.user.screen_name, name=SCREEN_NAME, tweetId = challenge.tweetId)
+		status = self.posts['replyChallengeAlreadyAlive'].format(user=mention.user.screen_name, name=SCREEN_NAME, tweetId = challenge.tweetId)
 		try:
 			res = self.tweepy.update_status(status, in_reply_to_status_id=mention.tweetId)
 		except tweepy.error.TweepError as e:
@@ -45,9 +46,9 @@ class TwitterAPI(object):
 			for u in challenge.winners:
 				name.append('@'+u.screen_name)
 			name_str = ", ".join(name)
-			post = ("Les gagnants du dernier challenge sont: {name_str} ! Bravo ! #FQChallenge{num}").format(name_str = name_str, num = challenge.id)
+			post = self.posts['tweetToWinners'].format(name_str = name_str, num = challenge.id)
 		else:
-			post = ("Aucun gagnants pour ce challenge :( #FQChallenge{num}").format(num = challenge.id)
+			post = self.posts['noWinners'].format(num = challenge.id)
 		try:
 			res = self.tweepy.update_status(post, in_reply_to_status_id=challenge.tweetId)
 		except tweepy.error.TweepError as e:
@@ -57,3 +58,13 @@ class TwitterAPI(object):
 		auth = tweepy.OAuthHandler(CUSTOMER_KEY, CUSTOMER_SECRET)
 		auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 		return tweepy.API(auth)
+
+	def getPosts(self, lang):
+		f = open('posts.json')
+		data = f.read()
+		f.close()
+		posts = json.loads(data)
+		return posts[lang]
+
+
+

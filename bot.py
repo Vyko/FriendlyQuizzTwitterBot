@@ -7,9 +7,9 @@ import pprint
 
 class Bot(object):
     """docstring for Bot"""
-    def __init__(self):
+    def __init__(self, lang):
         super(Bot, self).__init__()
-        self.api = TwitterAPI()
+        self.api = TwitterAPI(lang)
         self.cm = ChallengeManager(self.api, CHALLENGE_DURATION)
 
     def run(self):

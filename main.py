@@ -2,8 +2,8 @@
 from bot import Bot
 
 def main():
-    bot = Bot()
-    bot.run()
+    botFr = Bot('fr')
+    botFr.run()
 
 if __name__ == "__main__":
     main()
