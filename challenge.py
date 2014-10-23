@@ -4,12 +4,12 @@ import pprint
 class Challenge(object):
 	"""docstring for Challenge"""
 
-	def __init__(self, c_id, mention, question, reponse):
+	def __init__(self, c_id, mention, question, lang):
 		super(Challenge, self).__init__()
 		self.owner = mention.user
 		self.replyTweetId = mention.tweetId
 		self.question = question
-		self.reponse = reponse
+		self.lang = lang
 		self.isAlive = True
 		self.startDate = None
 		self.tweetId = None
@@ -25,10 +25,8 @@ class Challenge(object):
 		self.answers.append(m)
 
 	def proccessAnwers(self):
-		pprint.pprint(self.answers)
 		for m in self.answers:
 			rep = m.getText()
-			pprint.pprint(rep)
-			if rep == self.reponse.lower():
+			if rep == self.question.getAnswer(self.lang).lower():
 				self.winners.append(m.user)
 		self.answers = None

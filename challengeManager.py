@@ -1,22 +1,23 @@
 from challenge import Challenge
+from question import Question
 from datetime import datetime
+from fq_api import FQAPI
 import pprint
-import sys
 
 class ChallengeManager(object):
 	"""docstring for ChallengeManager"""
-	def __init__(self, api, duration):
+	def __init__(self, api, config):
 		super(ChallengeManager, self).__init__()
-		self.api = api
+		self.twapi = api
+		self.fqapi = FQAPI(config['fq'])
+		self.challengeDuration = config['twitter']['settings']['challenge_duration']
 		self.challenges = []
-		self.challengeDuration = duration
+		self.fqapi.login()
 
-
-	def newChallenge(self, m):
-		question = "Quel systeme d'exploitation est utilise sur les ordinateurs Apple ?"
-		reponse = "Mac Os"
-		c = Challenge(len(self.challenges) + 1, m, question, reponse)
-		status = self.api.postNewChallenge(c)
+	def newChallenge(self, m, lang):
+		question = Question(self.fqapi.getQuestion())
+		c = Challenge(len(self.challenges) + 1, m, question, lang)
+		status = self.twapi.postNewChallenge(c)
 		if status:
 			c.setDetails(status)
 			self.challenges.append(c)
@@ -27,7 +28,6 @@ class ChallengeManager(object):
 		return self.challenges[-1].isAlive
 
 	def updateChallenge(self):
-		print("CM update")
 		if not self.challenges:
 			return False
 		c = self.challenges[-1]

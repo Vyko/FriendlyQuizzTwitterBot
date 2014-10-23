@@ -1,43 +1,45 @@
 import json
 import tweepy
-from config import *
+from fq_exception import FQException
 
 class TwitterAPI(object):
 	"""docstring for TwitterAPI"""
-	def __init__(self, lang):
+	def __init__(self, config, lang):
 		super(TwitterAPI, self).__init__()
+		self.config = config
 		self.lastId = None
 		self.posts = self.getPosts(lang)
 		self.tweepy = self.getTweepy()
 		self.getTheLastMention()
+		self.lang = lang
 
 	def getTheLastMention(self):
-		res = self.tweepy.mentions_timeline(count=1)
+		res = self.tweepy.search(q = "@{name}".format(name=self.config['screen_name']), rpp=1)
 		if len(res):
 			self.lastId = res[0].id
 
 	def getLastMentions(self):
-		res = self.tweepy.mentions_timeline(since_id=self.lastId)
+		res = self.tweepy.search(q = "@{name}".format(name=self.config['screen_name']), since_id=self.lastId)
 		if len(res):
 			self.lastId = res[0].id
 		return res
 		
 	def postNewChallenge(self, challenge):
 		res = None
-		status = self.posts['postNewChallenge'].format(owner = challenge.owner.screen_name, question=challenge.question)
+		status = self.posts['postNewChallenge'].format(owner = challenge.owner.screen_name, question=challenge.question.getQuestion(self.lang))
 		try:
 			res = self.tweepy.update_status(status, in_reply_to_status_id=challenge.replyTweetId)
 		except tweepy.error.TweepError as e:
-			print("Duplicate tweet. Ignored it.")
+			raise FQException(e.message)
 		return res
 
 	def replyChallengeAlreadyAlive(self, mention, challenge):
 		res = None
-		status = self.posts['replyChallengeAlreadyAlive'].format(user=mention.user.screen_name, name=SCREEN_NAME, tweetId = challenge.tweetId)
+		status = self.posts['replyChallengeAlreadyAlive'].format(user=mention.user.screen_name, name=self.config['screen_name'], tweetId = challenge.tweetId)
 		try:
 			res = self.tweepy.update_status(status, in_reply_to_status_id=mention.tweetId)
 		except tweepy.error.TweepError as e:
-			print("Duplicate tweet. Ignored it.")
+			raise FQException(e.message)
 		return res
 
 	def tweetToWinners(self, challenge):
@@ -52,11 +54,11 @@ class TwitterAPI(object):
 		try:
 			res = self.tweepy.update_status(post, in_reply_to_status_id=challenge.tweetId)
 		except tweepy.error.TweepError as e:
-			print("Duplicate tweet. Ignored it.")
+			raise FQException(e.message)
 
 	def getTweepy(self):
-		auth = tweepy.OAuthHandler(CUSTOMER_KEY, CUSTOMER_SECRET)
-		auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+		auth = tweepy.OAuthHandler(self.config['customer_key'], self.config['customer_secret'])
+		auth.set_access_token(self.config['access_key'], self.config['access_secret'])
 		return tweepy.API(auth)
 
 	def getPosts(self, lang):
