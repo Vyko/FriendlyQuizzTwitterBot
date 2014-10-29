@@ -32,7 +32,3 @@ class FQAPI(object):
 		if (rep.get('error', None)):
 			return None
 		return rep['succes']['grouped_questions'][0]['questions']
-
-
-# 	print(q[0]['text'])
-# 	print(q[1]['text'])

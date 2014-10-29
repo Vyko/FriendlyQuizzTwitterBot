@@ -1,5 +1,6 @@
 import time
 import pprint
+import logging as log
 
 class Challenge(object):
 	"""docstring for Challenge"""
@@ -20,13 +21,16 @@ class Challenge(object):
 	def setDetails(self, status):
 		self.tweetId = status.id
 		self.startDate = status.created_at
+		log.info("New Challenge by {owner}".format(owner = self.owner.screen_name))
 
 	def addAnswer(self, m):
 		self.answers.append(m)
+		log.info("Reply to Challenge #{id} by {user}:".format(id=self.id, user=m.user.screen_name))
+		log.info("/t{status}".format(status=m.getText()))
 
 	def proccessAnwers(self):
 		for m in self.answers:
 			rep = m.getText()
-			if rep == self.question.getAnswer(self.lang).lower():
+			if self.question.isAnAnswer(self.lang, rep):
 				self.winners.append(m.user)
 		self.answers = None

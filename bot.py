@@ -21,8 +21,7 @@ class Bot(object):
         self.run()
 
     def process(self):
-        up = self.cm.updateChallenge()
-        if up:
+        if self.cm.updateChallenge():
             self.cm.processAnswer()
             try:
                 self.api.tweetToWinners(self.cm.getCurrentChallenge())

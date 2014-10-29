@@ -12,11 +12,17 @@ class Question(object):
 		self.questions['fr'] = self.data[1]['text']
 		self.questions['en'] = self.data[0]['text']
 
-		self.answers['en'] = self.data[0]['answers'][0]['text']
-		self.answers['fr'] = self.data[1]['answers'][0]['text']
+		self.answers['en'] = self.data[0]['answers']
+		self.answers['fr'] = self.data[1]['answers']
 		
 	def getAnswer(self, lang):
 		return self.answers[lang]
 
 	def getQuestion(self, lang):
 		return self.questions[lang]
+
+	def isAnAnswer(self, lang, text):
+		for a in self.answers:
+			if text == a['text'].lower():
+				return True
+		return False

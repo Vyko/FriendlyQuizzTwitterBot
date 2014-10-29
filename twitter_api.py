@@ -1,6 +1,6 @@
 import json
 import tweepy
-from fq_exception import FQException
+import logging as log
 
 class TwitterAPI(object):
 	"""docstring for TwitterAPI"""
@@ -26,11 +26,11 @@ class TwitterAPI(object):
 		
 	def postNewChallenge(self, challenge):
 		res = None
-		status = self.posts['postNewChallenge'].format(owner = challenge.owner.screen_name, question=challenge.question.getQuestion(self.lang))
+		status = self.posts['postNewChallenge'].format(owner = challenge.owner.screen_name, question=challenge.question.getQuestion(self.lang), num=challenge.id)
 		try:
 			res = self.tweepy.update_status(status, in_reply_to_status_id=challenge.replyTweetId)
 		except tweepy.error.TweepError as e:
-			raise FQException(e.message)
+			log.error(e.message)
 		return res
 
 	def replyChallengeAlreadyAlive(self, mention, challenge):
@@ -39,7 +39,7 @@ class TwitterAPI(object):
 		try:
 			res = self.tweepy.update_status(status, in_reply_to_status_id=mention.tweetId)
 		except tweepy.error.TweepError as e:
-			raise FQException(e.message)
+			log.error(e.message)
 		return res
 
 	def tweetToWinners(self, challenge):
@@ -54,7 +54,7 @@ class TwitterAPI(object):
 		try:
 			res = self.tweepy.update_status(post, in_reply_to_status_id=challenge.tweetId)
 		except tweepy.error.TweepError as e:
-			raise FQException(e.message)
+			log.error(e.message)
 
 	def getTweepy(self):
 		auth = tweepy.OAuthHandler(self.config['customer_key'], self.config['customer_secret'])

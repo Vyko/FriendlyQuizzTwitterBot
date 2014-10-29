@@ -1,6 +1,6 @@
 {
 	"fr":{
-		"postNewChallenge" : "Nouveau challenge par @{owner}. {question} #FQChallenge",
+		"postNewChallenge" : "Nouveau challenge par @{owner}. {question} #FQChallenge{num}",
 		"replyChallengeAlreadyAlive" : "@{user} Un challenge est deja en cours ici: https://twitter.com/{name}/status/{tweetId}",
 		"tweetToWinners" : "Les gagnants du dernier challenge sont: {name_str} ! Bravo ! #FQChallenge{num}",
 		"noWinners" : "Aucun gagnants pour ce challenge :( #FQChallenge{num}"

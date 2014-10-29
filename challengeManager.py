@@ -2,7 +2,6 @@ from challenge import Challenge
 from question import Question
 from datetime import datetime
 from fq_api import FQAPI
-import pprint
 
 class ChallengeManager(object):
 	"""docstring for ChallengeManager"""
@@ -34,7 +33,6 @@ class ChallengeManager(object):
 		if c.isAlive:
 			now = datetime.utcnow()
 			delta = now - c.startDate
-			pprint.pprint(delta)
 			if delta.seconds >= self.challengeDuration:
 				c.isAlive = False
 				return True

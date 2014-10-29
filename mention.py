@@ -1,5 +1,3 @@
-import re
-
 class Mention(object):
 	"""docstring for Mention"""
 	def __init__(self, status):
