@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import thread
 import logging
 from bot import Bot
 
@@ -8,7 +9,9 @@ def main():
 					datefmt='%m/%d/%Y %I:%M:%S %p',
 					filename='fqbot.log')
 	botFr = Bot('fr')
-	botFr.run()
+	botEn = Bot('en')
+	thread.start_new_thread(botFr.run())
+	thread.start_new_thread(botEn.run())
 
 if __name__ == "__main__":
     main()

@@ -21,12 +21,12 @@ class Challenge(object):
 	def setDetails(self, status):
 		self.tweetId = status.id
 		self.startDate = status.created_at
-		log.info("New Challenge by {owner}".format(owner = self.owner.screen_name))
+		log.info(u"New Challenge by {owner} {question}".format(owner = self.owner.screen_name, question = self.question.getQuestion(self.lang)))
 
 	def addAnswer(self, m):
 		self.answers.append(m)
 		log.info("Reply to Challenge #{id} by {user}:".format(id=self.id, user=m.user.screen_name))
-		log.info("/t{status}".format(status=m.getText()))
+		log.info("-->{status}".format(status=m.getText()))
 
 	def proccessAnwers(self):
 		for m in self.answers:

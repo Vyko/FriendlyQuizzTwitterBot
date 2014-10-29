@@ -24,7 +24,9 @@ class Bot(object):
         if self.cm.updateChallenge():
             self.cm.processAnswer()
             try:
-                self.api.tweetToWinners(self.cm.getCurrentChallenge())
+                c = self.cm.getCurrentChallenge()
+                log.info("Fin du challenge {num}".format(num = c.id))
+                self.api.tweetToWinners(c)
             except FQException as e:
                 e.printMessage()
         mentions = self.fetchMentions()

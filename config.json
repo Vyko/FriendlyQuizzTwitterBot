@@ -12,6 +12,14 @@
 				"access_key": "2836088705-IiubdRWpCXTVXv0MrU7yR7lj4cd716zRyp04tmF",
 				"access_secret": "egL90P1aCedRh5SrJOGpgalt0nUj9jnpKFMZ07FLsiY2N",
 				"ht_challenge": "ChallengeMe"
+			},
+			"en": {
+				"screen_name": "FqBot",
+				"customer_key": "UJGIQ64kB8wEKcjPpfKrqq2Wz",
+				"customer_secret": "kkR99SxfGvJd5vnEqjpgY8NKHGvKqBmL18F0kiIqX99zgh2gde",
+				"access_key": "2836088705-IiubdRWpCXTVXv0MrU7yR7lj4cd716zRyp04tmF",
+				"access_secret": "egL90P1aCedRh5SrJOGpgalt0nUj9jnpKFMZ07FLsiY2N",
+				"ht_challenge": "ChallengeMe"
 			}
 		}
 	},

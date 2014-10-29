@@ -16,10 +16,11 @@ class ChallengeManager(object):
 	def newChallenge(self, m, lang):
 		question = Question(self.fqapi.getQuestion())
 		c = Challenge(len(self.challenges) + 1, m, question, lang)
-		status = self.twapi.postNewChallenge(c)
-		if status:
-			c.setDetails(status)
-			self.challenges.append(c)
+		status = None
+		while status == None:
+			status = self.twapi.postNewChallenge(c)
+		c.setDetails(status)
+		self.challenges.append(c)
 
 	def hasAliveChallenge(self):
 		if not self.challenges:

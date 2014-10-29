@@ -30,7 +30,7 @@ class TwitterAPI(object):
 		try:
 			res = self.tweepy.update_status(status, in_reply_to_status_id=challenge.replyTweetId)
 		except tweepy.error.TweepError as e:
-			log.error(e.message)
+			log.error(u"{m}: {status}".format(m = e.message, status =status))
 		return res
 
 	def replyChallengeAlreadyAlive(self, mention, challenge):

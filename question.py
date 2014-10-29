@@ -22,7 +22,7 @@ class Question(object):
 		return self.questions[lang]
 
 	def isAnAnswer(self, lang, text):
-		for a in self.answers:
+		for a in self.answers[lang]:
 			if text == a['text'].lower():
 				return True
 		return False
