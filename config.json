@@ -6,15 +6,15 @@
 		},
 		"accounts":{
 			"fr": {
-				"screen_name": "FqBot",
-				"customer_key": "UJGIQ64kB8wEKcjPpfKrqq2Wz",
-				"customer_secret": "kkR99SxfGvJd5vnEqjpgY8NKHGvKqBmL18F0kiIqX99zgh2gde",
-				"access_key": "2836088705-IiubdRWpCXTVXv0MrU7yR7lj4cd716zRyp04tmF",
-				"access_secret": "egL90P1aCedRh5SrJOGpgalt0nUj9jnpKFMZ07FLsiY2N",
+				"screen_name": "FqGeorge",
+				"customer_key": "wdnsfG4qULTc57Z2xCzXnhgh5",
+				"customer_secret": "WX2H47lBkPyTwp16tQuXM2K4chtsIydpUHrDLVOgTaWAAQ7yl2",
+				"access_key": "2854833633-2yXJsLuVo0ZQRIqZUkBCkZvKYyBGc5w4MFGde7b",
+				"access_secret": "rISpI7dsUQjy92A7tTm7CPXzeLoLSr7rkgqG5FYpGTk8j",
 				"ht_challenge": "ChallengeMe"
 			},
 			"en": {
-				"screen_name": "FqBot",
+				"screen_name": "FqRobbie",
 				"customer_key": "UJGIQ64kB8wEKcjPpfKrqq2Wz",
 				"customer_secret": "kkR99SxfGvJd5vnEqjpgY8NKHGvKqBmL18F0kiIqX99zgh2gde",
 				"access_key": "2836088705-IiubdRWpCXTVXv0MrU7yR7lj4cd716zRyp04tmF",

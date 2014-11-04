@@ -1,9 +1,10 @@
-import time
+from threading import Timer
 from challengeManager import ChallengeManager
 from twitter_api import TwitterAPI
 from mention import Mention
 from fq_exception import FQException
 import json
+import logging as log
 
 class Bot(object):
     """docstring for Bot"""
@@ -16,11 +17,11 @@ class Bot(object):
 
 
     def run(self):
-        time.sleep(self.config['twitter']['settings']['fetch_frequency'])
-        self.process()
-        self.run()
+        self.t = Timer(self.config['twitter']['settings']['fetch_frequency'], self.process)
+        self.t.start()
 
     def process(self):
+        self.t.cancel()
         if self.cm.updateChallenge():
             self.cm.processAnswer()
             try:
@@ -32,7 +33,7 @@ class Bot(object):
         mentions = self.fetchMentions()
         if len(mentions):
             self.processMentions(mentions)
-            
+        self.run()
 
     def fetchMentions(self):
         lm = self.api.getLastMentions()
