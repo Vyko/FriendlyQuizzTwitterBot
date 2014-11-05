@@ -1,3 +1,4 @@
+import sqlite3 as sql
 from challenge import Challenge
 from question import Question
 from datetime import datetime
@@ -10,27 +11,30 @@ class ChallengeManager(object):
 		self.twapi = api
 		self.fqapi = FQAPI(config['fq'])
 		self.challengeDuration = config['twitter']['settings']['challenge_duration']
-		self.challenges = []
+		self.challenge = None
+		self.c_id = 0
 		self.fqapi.login()
 
 	def newChallenge(self, m, lang):
 		question = Question(self.fqapi.getQuestion())
-		c = Challenge(len(self.challenges) + 1, m, question, lang)
+		c = Challenge(self.c_id + 1, m, question, lang)
 		status = None
 		while status == None:
 			status = self.twapi.postNewChallenge(c)
 		c.setDetails(status)
-		self.challenges.append(c)
+		self.challenge = c
+		self.c_id += 1
+
 
 	def hasAliveChallenge(self):
-		if not self.challenges:
+		if not self.challenge:
 			return False
-		return self.challenges[-1].isAlive
+		return self.challenge.isAlive
 
 	def updateChallenge(self):
-		if not self.challenges:
+		if not self.challenge:
 			return False
-		c = self.challenges[-1]
+		c = self.challenge
 		if c.isAlive:
 			now = datetime.utcnow()
 			delta = now - c.startDate
@@ -40,24 +44,38 @@ class ChallengeManager(object):
 		return False
 
 	def getCurrentChallenge(self):
-		if not self.challenges:
+		if not self.challenge:
 			return None
-		return self.challenges[-1]
+		return self.challenge
 
 	def isAReply(self, m):
-		if len(self.challenges):
-			return m.getReplyId() == self.challenges[-1].tweetId
+		if self.challenge:
+			return m.getReplyId() == self.challenge.tweetId
 		return False
 
 	def storeReply(self, m):
-		c = self.challenges[-1]
+		c = self.challenge
 		mentionDate = m.status.created_at
 		delta = mentionDate - c.startDate
 		if delta.seconds <= self.challengeDuration:
 			c.addAnswer(m)
 
 	def processAnswer(self):
-		self.challenges[-1].proccessAnwers()
+		self.challenge.proccessAnwers()
+
+	def saveAndPurge(self):
+		c = self.challenge
+		conn = sql.connect('fqbot.db')
+		cur = conn.cursor()
+		cur.execute("INSERT INTO challenges VALUES (null, ?, ?, ?, ?)", (c.question.getQuestion(c.lang), c.tweetId, c.lang, c.id))
+		cid = cur.lastrowid
+		winners = []
+		for w in c.winners:
+			winners.append((w.screen_name, cid))
+		cur.executemany("INSERT INTO winner  VALUES (null, ?, ?)", winners)
+		conn.commit()
+		del(self.challenge)
+		self.challenge = None
 
 
 

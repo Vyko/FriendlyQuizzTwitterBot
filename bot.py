@@ -28,6 +28,7 @@ class Bot(object):
                 c = self.cm.getCurrentChallenge()
                 log.info("Fin du challenge {num}".format(num = c.id))
                 self.api.tweetToWinners(c)
+                self.cm.saveAndPurge()
             except FQException as e:
                 e.printMessage()
         mentions = self.fetchMentions()

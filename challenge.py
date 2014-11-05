@@ -33,4 +33,3 @@ class Challenge(object):
 			rep = m.getText()
 			if self.question.isAnAnswer(self.lang, rep):
 				self.winners.append(m.user)
-		self.answers = None
