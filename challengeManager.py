@@ -1,8 +1,8 @@
-import sqlite3 as sql
 from challenge import Challenge
 from question import Question
 from datetime import datetime
 from fq_api import FQAPI
+from sql import FQSQL
 
 class ChallengeManager(object):
 	"""docstring for ChallengeManager"""
@@ -10,6 +10,7 @@ class ChallengeManager(object):
 		super(ChallengeManager, self).__init__()
 		self.twapi = api
 		self.fqapi = FQAPI(config['fq'])
+		self.sql = FQSQL('fqbot.db')
 		self.challengeDuration = config['twitter']['settings']['challenge_duration']
 		self.challenge = None
 		self.c_id = 0
@@ -64,16 +65,7 @@ class ChallengeManager(object):
 		self.challenge.proccessAnwers()
 
 	def saveAndPurge(self):
-		c = self.challenge
-		conn = sql.connect('fqbot.db')
-		cur = conn.cursor()
-		cur.execute("INSERT INTO challenges VALUES (null, ?, ?, ?, ?)", (c.question.getQuestion(c.lang), c.tweetId, c.lang, c.id))
-		cid = cur.lastrowid
-		winners = []
-		for w in c.winners:
-			winners.append((w.screen_name, cid))
-		cur.executemany("INSERT INTO winner  VALUES (null, ?, ?)", winners)
-		conn.commit()
+		self.sql.saveChallenge(self.challenge)
 		del(self.challenge)
 		self.challenge = None
 

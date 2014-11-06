@@ -37,7 +37,12 @@ class Bot(object):
         self.run()
 
     def fetchMentions(self):
-        lm = self.api.getLastMentions()
+        lm = None
+        try:
+            lm = self.api.getLastMentions()
+        except tweepy.error.TweepError as e:
+            log.error(e.message)
+            
         mentions = []
         if len(lm):
             for m in lm:
