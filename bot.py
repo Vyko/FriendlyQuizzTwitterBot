@@ -1,3 +1,4 @@
+import os
 from threading import Timer
 from challengeManager import ChallengeManager
 from twitter_api import TwitterAPI
@@ -14,7 +15,7 @@ class Bot(object):
         self.api = TwitterAPI(self.config['twitter']['accounts'][lang], lang)
         self.cm = ChallengeManager(self.api, self.config)
         self.lang = lang
-
+        self.stop = False
 
     def run(self):
         self.t = Timer(self.config['twitter']['settings']['fetch_frequency'], self.process)
@@ -34,7 +35,8 @@ class Bot(object):
         mentions = self.fetchMentions()
         if len(mentions):
             self.processMentions(mentions)
-        self.run()
+        if self.stop == False:
+            self.run()
 
     def fetchMentions(self):
         lm = None
@@ -60,7 +62,8 @@ class Bot(object):
                     self.cm.newChallenge(m, self.lang)
 
     def loadConfig(self, lang):
-        f = open('config.json')
+        path = os.path.dirname(os.path.abspath(__file__))
+        f = open(path+'/config.json')
         data = f.read()
         f.close()
         return json.loads(data)

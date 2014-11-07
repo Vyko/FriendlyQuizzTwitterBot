@@ -4,7 +4,8 @@ import os
 class FQSQL(object):
 	def __init__(self, file_db):
 		super(FQSQL, self).__init__()
-		self.file = file_db
+		path = os.path.dirname(os.path.abspath(__file__))
+		self.file = path+'/'+file_db
 		self.initDB()
 
 	def initDB(self):

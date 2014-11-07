@@ -1,3 +1,4 @@
+import os
 import json
 import tweepy
 import logging as log
@@ -62,7 +63,8 @@ class TwitterAPI(object):
 		return tweepy.API(auth)
 
 	def getPosts(self, lang):
-		f = open('posts.json')
+		path = os.path.dirname(os.path.abspath(__file__))
+		f = open(path+'/posts.json')
 		data = f.read()
 		f.close()
 		posts = json.loads(data)
