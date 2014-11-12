@@ -13,7 +13,7 @@ class Bot(object):
         super(Bot, self).__init__()
         self.config = self.loadConfig(lang)
         self.api = TwitterAPI(self.config['twitter']['accounts'][lang], lang)
-        self.cm = ChallengeManager(self.api, self.config)
+        self.cm = ChallengeManager(self.api, lang, self.config)
         self.lang = lang
         self.stop = False
 
@@ -23,26 +23,30 @@ class Bot(object):
 
     def process(self):
         self.t.cancel()
-        if self.cm.updateChallenge():
-            self.cm.processAnswer()
-            try:
-                c = self.cm.getCurrentChallenge()
-                log.info("Fin du challenge {num}".format(num = c.id))
-                self.api.tweetToWinners(c)
-                self.cm.saveAndPurge()
-            except FQException as e:
-                e.printMessage()
-        mentions = self.fetchMentions()
-        if len(mentions):
-            self.processMentions(mentions)
-        if self.stop == False:
-            self.run()
+        try:
+            if self.cm.updateChallenge():
+                self.cm.processAnswer()
+                try:
+                    c = self.cm.getCurrentChallenge()
+                    log.info("Fin du challenge {num}".format(num = c.id))
+                    self.api.tweetToWinners(c)
+                    self.cm.saveAndPurge()
+                except FQException as e:
+                    e.printMessage()
+            mentions = self.fetchMentions()
+            if len(mentions):
+                self.processMentions(mentions)
+        except Exception as e:
+            log.error(e.message)
+
+        #if self.stop == False:
+        self.run()
 
     def fetchMentions(self):
         lm = None
         try:
             lm = self.api.getLastMentions()
-        except tweepy.error.TweepError as e:
+        except Exception as e:
             log.error(e.message)
             
         mentions = []

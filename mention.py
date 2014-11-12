@@ -19,7 +19,7 @@ class Mention(object):
 		return self.status.in_reply_to_status_id;
 
 	def getText(self):
-		text = self.removeHashtags(self.removeUser(self.removeURL(self.status.text.lower())))
+		text = self.removePonct(self.removeHashtags(self.removeUser(self.removeURL(self.status.text.lower()))))
 		words = text.split()
 		return " ".join(words)
 
@@ -36,4 +36,10 @@ class Mention(object):
 	def removeURL(self, text):
 		for url in self.status.entities['urls']:
 			text = text.replace(url['text'].lower(), '')
+		return text
+
+	def removePonct(self, text):
+		rm = "./[]{<>$%^+&*-_}!:-)(',?"
+		for l in rm:
+			text = text.replace(l, '')
 		return text

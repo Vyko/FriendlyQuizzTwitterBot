@@ -7,7 +7,7 @@ from bot import Bot
 class BotDaemon(Daemon):
 	def run(self):
 		botFr = Bot('fr')
-		botEn = Bot('en')
+		botEn = Bot('en');
 		botFr.run()
 		botEn.run()
 
@@ -17,6 +17,7 @@ if __name__ == "__main__":
         datefmt='%m/%d/%Y %I:%M:%S %p',
         filename='fqbot.log')
     daemon = BotDaemon('/tmp/daemon-twitterbot.pid')
+    #daemon.run()
     if len(sys.argv) == 2:
             if 'start' == sys.argv[1]:
                     daemon.start()

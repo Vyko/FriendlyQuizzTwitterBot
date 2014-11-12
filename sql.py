@@ -28,4 +28,13 @@ class FQSQL(object):
 		cur.executemany("INSERT INTO winners  VALUES (null, ?, ?)", winners)
 		conn.commit()
 		conn.close()
-		
+	
+	def getLastChallengeId(self, lang):
+		conn = sql.connect(self.file)
+		cur = conn.cursor()
+		res = cur.execute("SELECT number FROM challenges WHERE lang = '"+lang+"' ORDER BY id DESC LIMIT 1")
+		for r in res:
+			conn.close()
+			return r[0]
+		conn.close()
+		return 0

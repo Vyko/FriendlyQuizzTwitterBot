@@ -70,5 +70,6 @@ class TwitterAPI(object):
 		posts = json.loads(data)
 		return posts[lang]
 
-
-
+	def getNewChallengeLength(self, challenge):
+		status = self.posts['postNewChallenge'].format(owner = challenge.owner.screen_name, question=challenge.question.getQuestion(self.lang), num=challenge.id)
+		return len(status)

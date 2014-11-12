@@ -6,19 +6,23 @@ from sql import FQSQL
 
 class ChallengeManager(object):
 	"""docstring for ChallengeManager"""
-	def __init__(self, api, config):
+	def __init__(self, api, lang, config):
 		super(ChallengeManager, self).__init__()
 		self.twapi = api
 		self.fqapi = FQAPI(config['fq'])
 		self.sql = FQSQL('fqbot.db')
 		self.challengeDuration = config['twitter']['settings']['challenge_duration']
 		self.challenge = None
-		self.c_id = 0
+		self.c_id = self.sql.getLastChallengeId(lang)
 		self.fqapi.login()
 
 	def newChallenge(self, m, lang):
 		question = Question(self.fqapi.getQuestion())
 		c = Challenge(self.c_id + 1, m, question, lang)
+		while (self.twapi.getNewChallengeLength(c) > 140):
+			question = Question(self.fqapi.getQuestion())
+			c = Challenge(self.c_id + 1, m, question, lang)
+
 		status = None
 		while status == None:
 			status = self.twapi.postNewChallenge(c)
