@@ -25,7 +25,7 @@
 	},
 	"fq": {
 		"account":{
-			"email": "YOUR_FQ_EMAIL_ACCOUNT"
+			"email": "YOUR_FQ_EMAIL_ACCOUNT",
 			"name": "YOUR_FQ_PLAYER_NAME",
 			"password":"YOUR_PASSWD"
 		},
