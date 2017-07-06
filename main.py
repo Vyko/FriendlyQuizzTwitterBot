@@ -16,8 +16,7 @@ if __name__ == "__main__":
         level = logging.DEBUG,
         datefmt='%m/%d/%Y %I:%M:%S %p',
         filename='fqbot.log')
-    daemon = BotDaemon('/tmp/daemon-twitterbot.pid')
-    #daemon.run()
+    daemon = BotDaemon('/var/run/daemon-twitterbot.pid')
     if len(sys.argv) == 2:
             if 'start' == sys.argv[1]:
                     daemon.start()
